@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import Ui from './Ui'
+import React, {useState,useEffect} from 'react'
 
-function App() {
+const App = () => {
+  const [movies,setMovies] = useState([]);
+  const apiUrl ="https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=8cba133be2f0f978fe078523f7423e95&page=1";
+  const search_url =
+  'https://api.themoviedb.org/3/search/movie?api_key=8cba133be2f0f978fe078523f7423e95&query="';
+
+  const getMovies=()=>{
+    fetch(apiUrl)
+    .then(res => res.json())
+    .then(data =>setMovies(data.results))
+  }
+
+  
+
+  const submitMovies=(e)=>{
+      let input = e.target.childNodes[0].value
+    
+      if(input && input!==""){
+        fetch(search_url+input)
+        .then(res => res.json())
+        .then(data => setMovies(data.results))
+
+       
+      }
+      else{
+        window.location.reload();
+      }
+
+
+    e.preventDefault()
+  }
+
+  useEffect(() => {
+    getMovies()
+    
+  },[]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+       
+      <Ui submitMovies={submitMovies} movies={movies}/>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
